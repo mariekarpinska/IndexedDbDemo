@@ -1,0 +1,801 @@
+/* receipt vault styles
+   one hand written sheet, no framework, every color and type choice derives from
+   the token system below, the metaphor is a thermal receipt roll persisted in a vault */
+
+:root {
+  /* paper and ink scheme, disciplined */
+  --paper: #f2ede3; /* warm receipt paper base */
+  --ink: #1c1a17; /* near black primary text */
+  --faded: #6b6359; /* muted ink, secondary text, timestamps, log */
+  --thermal: #c4452a; /* single burnt red accent, used only for live moments */
+  --rule: #d8cfbf; /* hairline rules and perforation dots */
+  --vault: #14323a; /* deep teal, the inspector chrome, a different material */
+  --vault-ink: #e7efe9; /* light text on the teal */
+  --vault-faded: #8fa9ad; /* muted text on the teal */
+
+  /* type faces, mono is the star because this app is about records and keys */
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  --display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", roboto, sans-serif;
+
+  /* type scale, intentional steps not arbitrary */
+  --t-xs: 0.72rem;
+  --t-sm: 0.82rem;
+  --t-base: 0.95rem;
+  --t-md: 1.1rem;
+  --t-lg: 1.5rem;
+  --t-xl: 2.4rem;
+
+  --maxw: 1200px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--paper);
+  /* a faint paper tooth so it does not read as flat default cream */
+  background-image: radial-gradient(
+    var(--rule) 0.5px,
+    transparent 0.5px
+  );
+  background-size: 9px 9px;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--t-base);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-variant-ligatures: none;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  background: rgba(28, 26, 23, 0.06);
+  padding: 0.05em 0.35em;
+  border-radius: 3px;
+}
+
+strong {
+  font-weight: 600;
+}
+
+/* visible keyboard focus rings everywhere, real contrast on the paper */
+:focus-visible {
+  outline: 2px solid var(--thermal);
+  outline-offset: 2px;
+}
+
+.app {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: clamp(1rem, 3vw, 2.5rem);
+}
+
+/* masthead -------------------------------------------------------------- */
+
+.masthead {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.masthead-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.mark-rule {
+  height: 2px;
+  width: clamp(1.5rem, 12vw, 8rem);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ink) 0 6px,
+    transparent 6px 10px
+  );
+}
+
+.title {
+  font-family: var(--display);
+  font-size: var(--t-xl);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0;
+  line-height: 1;
+}
+
+.tagline {
+  max-width: 46ch;
+  margin: 0.85rem auto 0;
+  color: var(--faded);
+  font-size: var(--t-base);
+}
+
+/* persistence banner ---------------------------------------------------- */
+
+.banner {
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  background: var(--paper);
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 1.75rem;
+  position: relative;
+}
+
+.banner::before {
+  /* a small thermal tab so the banner feels stamped onto the paper */
+  content: "persistence";
+  position: absolute;
+  top: -0.7rem;
+  left: 1rem;
+  background: var(--thermal);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.04em;
+  padding: 0.05rem 0.5rem;
+  border-radius: 2px;
+}
+
+.banner p {
+  margin: 0;
+  font-size: var(--t-sm);
+  color: var(--ink);
+}
+
+/* layout: main column plus the vault side rail -------------------------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+.column-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+/* panels ---------------------------------------------------------------- */
+
+.panel,
+.tools,
+.schema {
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1.25rem;
+}
+
+.panel-title,
+.tool-title {
+  font-family: var(--display);
+  font-size: var(--t-md);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.35rem;
+}
+
+.panel-help,
+.tool-note {
+  margin: 0 0 1rem;
+  color: var(--faded);
+  font-size: var(--t-sm);
+}
+
+/* form ------------------------------------------------------------------ */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.field-label {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--faded);
+}
+
+.field-input {
+  font-family: var(--body);
+  font-size: var(--t-base);
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.55rem 0.65rem;
+  width: 100%;
+}
+
+.field-input.mono {
+  font-family: var(--mono);
+}
+
+.field-input:focus {
+  border-color: var(--ink);
+}
+
+.field-hint {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--thermal);
+}
+
+input[type="file"].field-input {
+  padding: 0.45rem;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+}
+
+/* buttons --------------------------------------------------------------- */
+
+.btn-print {
+  margin-top: 1.1rem;
+  font-family: var(--display);
+  font-size: var(--t-base);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--paper);
+  background: var(--thermal);
+  border: none;
+  border-radius: 4px;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.btn-print:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn-print:disabled {
+  background: var(--rule);
+  color: var(--faded);
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  font-family: var(--mono);
+  font-size: var(--t-sm);
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn-ghost:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-link {
+  display: inline-block;
+  margin-top: 0.9rem;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--faded);
+  background: none;
+  border: none;
+  border-bottom: 1px dashed var(--faded);
+  padding: 0 0 1px;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  color: var(--thermal);
+  border-color: var(--thermal);
+}
+
+.btn-delete {
+  font-size: var(--t-xs);
+  color: var(--faded);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline dotted;
+}
+
+.btn-delete:hover {
+  color: var(--thermal);
+}
+
+/* query tools ----------------------------------------------------------- */
+
+.tools {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tool-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.tool-row .field-input {
+  width: auto;
+  min-width: 9rem;
+}
+
+.tool-active {
+  margin: 0.6rem 0 0;
+  font-size: var(--t-xs);
+  color: var(--thermal);
+}
+
+.cursor-out {
+  margin-top: 0.9rem;
+  border-top: 1px dashed var(--rule);
+  padding-top: 0.7rem;
+}
+
+.cursor-total {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.cursor-steps {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: var(--t-xs);
+  color: var(--faded);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.dim {
+  color: var(--faded);
+  opacity: 0.7;
+}
+
+/* receipt roll, the signature element ----------------------------------- */
+
+.roll {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0;
+  overflow: hidden;
+  /* a soft drop so the roll lifts off the page like a real curl of tape */
+  box-shadow: 0 1px 0 var(--rule), 0 12px 28px -22px rgba(28, 26, 23, 0.5);
+}
+
+.roll-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px dashed var(--rule);
+}
+
+.roll-title {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: var(--t-md);
+}
+
+.roll-sub {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--faded);
+}
+
+/* a perforation strip of dots, reused on segments and the empty state */
+.perf {
+  height: 8px;
+  background-image: radial-gradient(
+    circle at center,
+    var(--rule) 0 2px,
+    transparent 2.5px
+  );
+  background-size: 12px 8px;
+  background-repeat: repeat-x;
+  background-position: center;
+}
+
+.roll-empty {
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+}
+
+.empty-line {
+  font-family: var(--mono);
+  letter-spacing: 0.3em;
+  color: var(--faded);
+  margin: 1.25rem 0 0.75rem;
+}
+
+.empty-hint {
+  max-width: 38ch;
+  margin: 0 auto 1.25rem;
+  color: var(--faded);
+  font-size: var(--t-sm);
+}
+
+.roll-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.segment {
+  border-bottom: 1px solid transparent;
+}
+
+.segment-body {
+  padding: 0.9rem 1.25rem 1.1rem;
+}
+
+.segment-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.segment-name {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: var(--t-md);
+}
+
+.segment-amount {
+  font-weight: 700;
+  font-size: var(--t-md);
+  white-space: nowrap;
+}
+
+.segment-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  margin: 0.55rem 0 0;
+  font-size: var(--t-xs);
+  color: var(--faded);
+}
+
+.meta-row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.meta-row dt {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+
+.meta-row dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.segment-thumb {
+  display: block;
+  margin-top: 0.75rem;
+  max-width: 120px;
+  max-height: 120px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  /* slight desaturation so uploads read like printed receipt photos */
+  filter: grayscale(0.15) contrast(1.02);
+}
+
+.segment-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.85rem;
+}
+
+/* the VAULTED stamp, faint thermal stamp once the write committed */
+.stamp {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--thermal);
+  border: 1.5px solid var(--thermal);
+  border-radius: 3px;
+  padding: 0.1rem 0.45rem;
+  transform: rotate(-3deg);
+  opacity: 0.78;
+}
+
+/* the one bold moment: a fresh write prints in from the top, then settles */
+@keyframes print-in {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.segment-printing {
+  animation: print-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* the vault side rail --------------------------------------------------- */
+
+.rail {
+  min-width: 0;
+}
+
+.rail-sticky {
+  position: sticky;
+  top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.inspector,
+.eventlog {
+  background: var(--vault);
+  color: var(--vault-ink);
+  border-radius: 6px;
+  padding: 1.1rem 1.15rem;
+}
+
+.inspector-title,
+.eventlog-title {
+  font-family: var(--display);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 0.85rem;
+  color: var(--vault-faded);
+}
+
+.inspector-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: var(--t-sm);
+}
+
+.insp-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px dotted rgba(143, 169, 173, 0.25);
+  padding-bottom: 0.35rem;
+}
+
+.insp-row dt {
+  color: var(--vault-faded);
+}
+
+.insp-row dd {
+  margin: 0;
+  text-align: right;
+  color: var(--vault-ink);
+  word-break: break-word;
+}
+
+.inspector-subtitle {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--vault-faded);
+  margin: 1rem 0 0.4rem;
+}
+
+.inspector-indexes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--t-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.inspector-indexes li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.idx-name {
+  color: var(--vault-ink);
+}
+
+.idx-path {
+  color: var(--vault-faded);
+}
+
+.inspector-loading {
+  color: var(--vault-faded);
+  font-size: var(--t-sm);
+}
+
+/* the pulse: a single thermal flash on a value that just changed */
+@keyframes pulse-flash {
+  0% {
+    background: var(--thermal);
+    color: var(--paper);
+  }
+  100% {
+    background: transparent;
+    color: inherit;
+  }
+}
+
+.pulse {
+  animation: pulse-flash 0.9s ease-out;
+  border-radius: 2px;
+  padding: 0 0.2rem;
+}
+
+/* event log till tape --------------------------------------------------- */
+
+.tape {
+  max-height: 340px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 4px;
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.tape-empty {
+  color: var(--vault-faded);
+  font-size: var(--t-xs);
+  margin: 0;
+}
+
+.tape-line {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 0.5rem;
+  font-size: var(--t-xs);
+  line-height: 1.45;
+  align-items: baseline;
+}
+
+.tape-time {
+  color: var(--vault-faded);
+}
+
+.tape-kind {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.65rem;
+  color: var(--vault-faded);
+  align-self: center;
+}
+
+.tape-msg {
+  color: var(--vault-ink);
+  word-break: break-word;
+}
+
+/* color the live moments thermal so commits and cursors stand out */
+.kind-commit .tape-msg,
+.kind-upgrade .tape-msg,
+.kind-index .tape-msg {
+  color: #f0a08c;
+}
+
+.kind-cursor .tape-msg {
+  color: #f0c98c;
+}
+
+.kind-error .tape-msg {
+  color: var(--thermal);
+}
+
+.kind-commit .tape-kind,
+.kind-upgrade .tape-kind {
+  color: var(--thermal);
+}
+
+/* schema panel ---------------------------------------------------------- */
+
+.schema .tool-note code {
+  background: rgba(28, 26, 23, 0.06);
+}
+
+/* colophon -------------------------------------------------------------- */
+
+.colophon {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--rule);
+  font-size: var(--t-xs);
+  color: var(--faded);
+  text-align: center;
+}
+
+/* responsive: the rail collapses below the roll on narrow screens ------- */
+
+@media (max-width: 880px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .rail-sticky {
+    position: static;
+  }
+  .tape {
+    max-height: 240px;
+  }
+}
+
+@media (max-width: 520px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .masthead-mark {
+    gap: 0.5rem;
+  }
+}
+
+/* respect reduced motion: kill the print-in and the pulse entirely ------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .segment-printing,
+  .pulse {
+    animation: none;
+  }
+  * {
+    scroll-behavior: auto;
+  }
+}
