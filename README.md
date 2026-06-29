@@ -24,6 +24,8 @@ Then open the printed local URL. Type-check / production build:
 npm run build
 ```
 
+<img width="1014" height="1240" alt="ReceiptVault" src="https://github.com/user-attachments/assets/ecc82745-28ee-48e4-a56a-5764b1d43c2a" />
+
 ## A suggested tour (do these in order)
 
 Each step lights up a different IndexedDB concept. Keep the **event log** (the
